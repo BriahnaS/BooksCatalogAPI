@@ -29,7 +29,9 @@ namespace BooksCatalogAPI.Controllers
             {
                 BookId = b.BookId,
                 Title = b.Title.TitleName,
-                Authors = b.BookAuthors.Select(ba => ba.Author.AuthorName).ToList()
+                Authors = b.BookAuthors.Select(ba => ba.Author.AuthorName).ToList(),
+                CoverImageUrl = b.CoverImageUrl,
+                Description = b.Description
             }).ToListAsync();
             
             return Ok(books);
@@ -42,7 +44,9 @@ namespace BooksCatalogAPI.Controllers
             {
                 BookId = b.BookId,
                 Title = b.Title.TitleName,
-                Authors = b.BookAuthors.Select(ba => ba.Author.AuthorName).ToList()
+                Authors = b.BookAuthors.Select(ba => ba.Author.AuthorName).ToList(),
+                CoverImageUrl = b.CoverImageUrl,
+                Description = b.Description
             }).FirstOrDefaultAsync();
 
             return Ok(book);
@@ -100,7 +104,9 @@ namespace BooksCatalogAPI.Controllers
             {
                 BookId = b.BookId,
                 Title = b.Title.TitleName,
-                Authors = b.BookAuthors.Select(ba => ba.Author.AuthorName).ToList()
+                Authors = b.BookAuthors.Select(ba => ba.Author.AuthorName).ToList(),
+                CoverImageUrl = b.CoverImageUrl,
+                Description = b.Description
             }).ToList();
 
             return Ok(dtos);

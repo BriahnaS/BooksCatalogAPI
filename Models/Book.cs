@@ -16,7 +16,7 @@ namespace BooksCatalogAPI.Models
         public int Length { get; set; }
         public string Description { get; set; }
         public DateOnly PublicationDate { get; set; }
-        public string? CoverImage { get; set; }
+        public string? CoverImageUrl { get; set; }
         public int? ISBN { get; set; }
 
 
