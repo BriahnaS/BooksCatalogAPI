@@ -62,7 +62,7 @@ namespace BooksCatalogAPI.Service
 
             var targetEmbedding = JsonSerializer.Deserialize<float[]>(targetBook!.EmbeddingJson!)!;
 
-            var books = await _context.Books.ToListAsync();
+            var books = await _context.Books.Include(b => b.Title).Where(b => b.EmbeddingJson != null).ToListAsync();
 
             var recommendations = books.Where(b => b.BookId != bookId).Select(book =>
             {

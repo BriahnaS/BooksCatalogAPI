@@ -120,17 +120,6 @@ namespace BooksCatalogAPI.Controllers
             return Ok(dtos);
         }
 
-        [HttpGet("test-embedding")]
-        public async Task<IActionResult> TestEmbedding()
-        {
-            var embedding = await _embeddingService.GenerateEmbeddingAsync("Shadow of the Gods by John Gwynne");
-
-            return Ok(new
-            {
-                Length = embedding.Length,
-                FirstFive = embedding.Take(5)
-            });
-        }
 
         [HttpGet("{id}/generate-embedding")]
         public async Task<IActionResult> GenerateEmbedding(int id)
@@ -167,7 +156,7 @@ namespace BooksCatalogAPI.Controllers
 
             return Ok(recommendations.Select(r => new
             {
-                r.Book.BookId,
+                Title = r.Book.Title.TitleName,
                 r.Score
             }));
         }
