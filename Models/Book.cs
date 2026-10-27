@@ -26,8 +26,8 @@ namespace BooksCatalogAPI.Models
 
         //Join tables
         public ICollection<BookAuthor> BookAuthors { get; set; } = new List<BookAuthor>();
-        public ICollection<BookSubplot> BookSubplots { get; set; }
-        public ICollection<BookTrope> BookTropes { get; set; }
+        public ICollection<BookSubplot> BookSubplots { get; set; } = new List<BookSubplot>();
+        public ICollection<BookTrope> BookTropes { get; set; } = new List<BookTrope>();
 
         public string? EmbeddingJson { get; set; }
 

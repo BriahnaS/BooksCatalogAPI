@@ -18,12 +18,16 @@ namespace BooksCatalogAPI.Controllers
         private readonly CatalogDbContext _context;
         private readonly BookSearchService _bookSearchService;
         private readonly EmbeddingService _embeddingService;
+        private readonly RecommendationService _recService;
+        private readonly BookAnalysisService _bookAnalysisService;
 
-        public CatalogController(CatalogDbContext context, BookSearchService bookSearchService, EmbeddingService embeddingService)
+        public CatalogController(CatalogDbContext context, BookSearchService bookSearchService, EmbeddingService embeddingService, RecommendationService recService, BookAnalysisService bookAnalysisService)
         {
             _context = context;
             _bookSearchService = bookSearchService;
             _embeddingService = embeddingService;
+            _recService = recService;
+            _bookAnalysisService = bookAnalysisService;
         }
 
         [HttpGet]
@@ -139,7 +143,7 @@ namespace BooksCatalogAPI.Controllers
             }
 
             var text = $"""
-                Title: {book.Title}
+                Title: {book.Title.TitleName}
                 Description:{book.Description}
                 """;
 
@@ -154,6 +158,26 @@ namespace BooksCatalogAPI.Controllers
                 book.BookId,
                 Length = embedding.Length
             });
+        }
+
+        [HttpGet("{id}/recommendations")]
+        public async Task<IActionResult> GetRecommendations(int id)
+        {
+            var recommendations = await _recService.GetRecommendations(id);
+
+            return Ok(recommendations.Select(r => new
+            {
+                r.Book.BookId,
+                r.Score
+            }));
+        }
+
+        [HttpGet("test-analysis/{title}")]
+        public async Task<IActionResult> TestAnalysis(string title)
+        {
+            var result = await _bookAnalysisService.AnalyzeBookAsync(title);
+
+            return Ok(result);
         }
     }
 }

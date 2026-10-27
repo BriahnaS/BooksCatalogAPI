@@ -26,6 +26,8 @@ builder.Services.AddSingleton(sp =>
 
 builder.Configuration.AddUserSecrets<Program>();
 builder.Services.AddScoped<EmbeddingService>();
+builder.Services.AddScoped<RecommendationService>();
+builder.Services.AddScoped<BookAnalysisService>();
 
 var app = builder.Build();
 
