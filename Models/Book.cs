@@ -29,7 +29,7 @@ namespace BooksCatalogAPI.Models
         public ICollection<BookSubplot> BookSubplots { get; set; }
         public ICollection<BookTrope> BookTropes { get; set; }
 
-
+        public string? EmbeddingJson { get; set; }
 
     }
 }

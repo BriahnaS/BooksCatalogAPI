@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Routing;
+using System.Text.Json;
 
 namespace BooksCatalogAPI.Controllers
 {
@@ -15,11 +17,13 @@ namespace BooksCatalogAPI.Controllers
     {
         private readonly CatalogDbContext _context;
         private readonly BookSearchService _bookSearchService;
+        private readonly EmbeddingService _embeddingService;
 
-        public CatalogController(CatalogDbContext context, BookSearchService bookSearchService)
+        public CatalogController(CatalogDbContext context, BookSearchService bookSearchService, EmbeddingService embeddingService)
         {
             _context = context;
             _bookSearchService = bookSearchService;
+            _embeddingService = embeddingService;
         }
 
         [HttpGet]
@@ -33,7 +37,7 @@ namespace BooksCatalogAPI.Controllers
                 CoverImageUrl = b.CoverImageUrl,
                 Description = b.Description
             }).ToListAsync();
-            
+
             return Ok(books);
         }
 
@@ -55,7 +59,7 @@ namespace BooksCatalogAPI.Controllers
         [HttpGet("genres")]
         public async Task<ActionResult<List<GenreDto>>> GetGenres()
         {
-            
+
             var genres = await _context.Genres.ToListAsync();
 
             var genreDtos = genres.Select(genres => new GenreDto
@@ -110,6 +114,46 @@ namespace BooksCatalogAPI.Controllers
             }).ToList();
 
             return Ok(dtos);
+        }
+
+        [HttpGet("test-embedding")]
+        public async Task<IActionResult> TestEmbedding()
+        {
+            var embedding = await _embeddingService.GenerateEmbeddingAsync("Shadow of the Gods by John Gwynne");
+
+            return Ok(new
+            {
+                Length = embedding.Length,
+                FirstFive = embedding.Take(5)
+            });
+        }
+
+        [HttpGet("{id}/generate-embedding")]
+        public async Task<IActionResult> GenerateEmbedding(int id)
+        {
+            var book = await _context.Books.FindAsync(id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            var text = $"""
+                Title: {book.Title}
+                Description:{book.Description}
+                """;
+
+            var embedding = await _embeddingService.GenerateEmbeddingAsync(text);
+
+            book.EmbeddingJson = JsonSerializer.Serialize(embedding);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                book.BookId,
+                Length = embedding.Length
+            });
         }
     }
 }

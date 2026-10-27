@@ -16,7 +16,7 @@ namespace BooksCatalogAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("ProductVersion", "10.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -34,7 +34,7 @@ namespace BooksCatalogAPI.Migrations
 
                     b.HasKey("TitleId");
 
-                    b.ToTable("Titles");
+                    b.ToTable("Titles", (string)null);
                 });
 #pragma warning restore 612, 618
         }
