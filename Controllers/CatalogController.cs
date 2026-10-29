@@ -132,7 +132,7 @@ namespace BooksCatalogAPI.Controllers
             }
 
             var text = $"""
-                Title: {book.Title.TitleName}
+                Title: {book.Title}
                 Description:{book.Description}
                 """;
 
@@ -145,7 +145,7 @@ namespace BooksCatalogAPI.Controllers
             return Ok(new
             {
                 book.BookId,
-                Length = embedding.Length
+                Embedding = embedding
             });
         }
 
@@ -154,10 +154,13 @@ namespace BooksCatalogAPI.Controllers
         {
             var recommendations = await _recService.GetRecommendations(id);
 
-            return Ok(recommendations.Select(r => new
+            return Ok(recommendations.Select(r => new BookDto
             {
+                BookId = r.Book.BookId,
                 Title = r.Book.Title.TitleName,
-                r.Score
+                Authors = r.Book.BookAuthors.Select(a=> a.Author.AuthorName).ToList(),
+                CoverImageUrl = r.Book.CoverImageUrl,
+                Score = r.Score
             }));
         }
 
